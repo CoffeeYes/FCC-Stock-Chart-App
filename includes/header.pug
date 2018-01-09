@@ -1,0 +1,49 @@
+head
+  script(type="text/javascript").
+    var webSocket = new WebSocket("wss://fuzzy-jasmine.glitch.me/")
+    
+    //on message from server log the message
+    webSocket.onmessage = function(event) {
+      //event.data is the message coming from backend
+       var data = event.data
+       console.log(data)
+       if(data == "__refresh") {
+         location.reload();
+       }
+    }
+    
+    function clicked() {
+      webSocket.send("clicked")
+    }
+  script(type="text/javascript",src="https://code.jquery.com/jquery-3.2.1.min.js")
+  script(type="text/javascript" src="https://www.gstatic.com/charts/loader.js")
+  script(type="text/javascript").
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ['Time', 'MSMT'],
+        [!{value_arr}[0].name, Number(!{value_arr}[0].value)]
+      ]);
+      
+      //render each data point onto the chart from array passed in from backend
+      var test = !{value_arr}
+      for (i=1;i<test.length;i++) {
+        data.addRow([test[i].name,Number(test[i].value)])
+      }
+      
+      
+      var options = {
+        title: 'Stock Chart',
+        curveType: 'function',
+        legend: { position: 'bottom' }
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+      chart.draw(data, options);
+      console.log(!{value_arr}.length)
+    }
+  
+  .test

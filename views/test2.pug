@@ -1,0 +1,59 @@
+head
+  link(rel="stylesheet",src="style.css")
+  script(type="text/javascript",src="https://code.jquery.com/jquery-3.2.1.min.js")
+  script(type="text/javascript" src="https://www.gstatic.com/charts/loader.js")
+  script(type="text/javascript").
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ['Time'],
+        ["2:00"]
+      ]);
+      
+      
+      var test = !{value_arr}
+      console.log(test)
+      
+      //make each stock sticker a column
+      for(i = 0;i < test.length; i ++){
+        data.addColumn('number',test[i][0])
+      }
+      
+      
+      //dynamically add all the data points for all tickers
+      for(i=1;i<test[0].length;i++){
+        var current = []
+        current.push(test[0][i].name)
+        for(x=0;x<test.length;x++){
+          current.push(parseInt(test[x][i].value))
+        }
+        data.addRow(current)
+      }
+      
+      //chart options
+      var options = {
+        title: 'Stock Chart',
+        curveType: 'function',
+        legend: { position: 'bottom' }
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+      chart.draw(data, options);
+    }
+  
+#curve_chart
+form.add-ticker(action="/add-ticker",method="post")
+    p.error-message=error
+    input(name="search-term")
+    button add
+    
+if(ticker_arr)
+    .ticker-container
+      each item in ticker_arr
+        .ticker-container
+          p=item[0]
+          form.delete-ticker(method="post",action="/delete-ticker")
+            button(name="clicked",value=item[0]) X
